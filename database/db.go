@@ -12,10 +12,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func DBInstance() *mongo.Client {
+//DBinstance func
+func DBinstance() *mongo.Client {
 	if err := godotenv.Load(); err != nil {
 		log.Println("Error finding .env file")
 	}
+
 	MongoDb := os.Getenv("MONGODB_URI")
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(MongoDb))
@@ -24,24 +26,24 @@ func DBInstance() *mongo.Client {
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
 	defer cancel()
 	err = client.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println("Successfully Connected to MongoDB!")
+	fmt.Println("Connected to MongoDB!")
 
 	return client
 }
 
-//client Database instance
-var Client *mongo.Client = DBInstance()
+//Client Database instance
+var Client *mongo.Client = DBinstance()
 
-//openCollection is a function that makes a connection with a collection in the database
+//OpenCollection is a  function makes a connection with a collection in the database
 func OpenCollection(client *mongo.Client, collectionName string) *mongo.Collection {
-	clusterName := os.Getenv("CLUSTER_NAME")
 
-	var collection *mongo.Collection = client.Database(clusterName).Collection(os.Getenv("DB_COLLECTION_NAME"))
+	var collection *mongo.Collection = client.Database("cluster0").Collection(os.Getenv("DB_COLLECTION_NAME"))
+
 	return collection
 }

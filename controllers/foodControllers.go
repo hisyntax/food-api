@@ -54,8 +54,8 @@ func CreateFood(c *gin.Context) {
 
 	//assign the auto generated ID to the primary key attribute
 	food.Food_id = food.ID.Hex()
-	var num = helpers.ToFixed(food.Price, 2)
-	food.Price = num
+	var num = helpers.ToFixed(*food.Price, 2)
+	food.Price = &num
 
 	result, insertErr := foodCollection.InsertOne(ctx, food)
 	if insertErr != nil {
